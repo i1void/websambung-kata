@@ -37,8 +37,6 @@ async function loadData() {
 function doSearch() {
   const prefix = val("inputPrefix");
   const suffix = val("inputSuffix");
-  const minLen = parseInt(val("inputMin"))  || 0;
-  const maxLen = parseInt(val("inputMax"))  || Infinity;
 
   if (!prefix && !suffix) {
     alert("Isi minimal awalan atau akhiran dulu!");
@@ -48,9 +46,6 @@ function doSearch() {
   filtered = allWords.filter(w => {
     if (prefix && !w.startsWith(prefix)) return false;
     if (suffix && !w.endsWith(suffix))   return false;
-    if (w.length < minLen)               return false;
-    if (w.length > maxLen)               return false;
-    // hindari overlap prefix + suffix pada kata pendek
     if (prefix && suffix && w.length < prefix.length + suffix.length) return false;
     return true;
   });
@@ -60,12 +55,12 @@ function doSearch() {
 }
 
 function doReset() {
-  ["inputPrefix", "inputSuffix", "inputMin", "inputMax"].forEach(id => {
+  ["inputPrefix", "inputSuffix"].forEach(id => {
     document.getElementById(id).value = "";
   });
   filtered = [];
   document.getElementById("pagination").innerHTML    = "";
-  document.getElementById("resultsHeader").style.display = "none";
+  document.getElementById("resultsLabel").style.display = "none";
   showInitial();
 }
 
@@ -96,7 +91,7 @@ function renderResults() {
   `;
 
   // Header
-  const rh = document.getElementById("resultsHeader");
+  const rh = document.getElementById("resultsLabel");
   rh.style.display = "block";
   rh.textContent   = total === 0
     ? "Tidak ada hasil"
@@ -157,10 +152,10 @@ function highlight(w, prefix, suffix) {
   const pl = prefix.length;
   const sl = suffix.length;
   if (pl && sl && pl + sl <= w.length) {
-    return `<span class="hl-start">${w.slice(0, pl)}</span>${w.slice(pl, w.length - sl)}<span class="hl-end">${w.slice(w.length - sl)}</span>`;
+    return `<span class="hl-s">${w.slice(0, pl)}</span>${w.slice(pl, w.length - sl)}<span class="hl-e">${w.slice(w.length - sl)}</span>`;
   }
-  if (pl && pl <= w.length) return `<span class="hl-start">${w.slice(0, pl)}</span>${w.slice(pl)}`;
-  if (sl && sl <= w.length) return `${w.slice(0, w.length - sl)}<span class="hl-end">${w.slice(w.length - sl)}</span>`;
+  if (pl && pl <= w.length) return `<span class="hl-s">${w.slice(0, pl)}</span>${w.slice(pl)}`;
+  if (sl && sl <= w.length) return `${w.slice(0, w.length - sl)}<span class="hl-e">${w.slice(w.length - sl)}</span>`;
   return w;
 }
 
@@ -207,7 +202,7 @@ function val(id) {
 }
 
 function bindEnterKeys() {
-  ["inputPrefix", "inputSuffix", "inputMin", "inputMax"].forEach(id => {
+  ["inputPrefix", "inputSuffix"].forEach(id => {
     document.getElementById(id).addEventListener("keydown", e => {
       if (e.key === "Enter") doSearch();
     });
