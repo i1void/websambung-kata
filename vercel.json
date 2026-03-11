@@ -1,12 +1,11 @@
 {
   "version": 2,
-  "rootDirectory": "public",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/$1" }
+    { "source": "/(.*)", "destination": "/public/$1" }
   ],
   "headers": [
     {
-      "source": "/data/(.*)",
+      "source": "/public/data/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=86400" }
       ]
