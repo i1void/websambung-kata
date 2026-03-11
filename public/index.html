@@ -3,54 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KBBI — Sambung Kata</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <title>KBBI Sambung Kata</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
 <header>
-  <div class="logo">KBBI<span>.</span>SK</div>
-  <div class="badge">⚡ Sambung Kata Tool</div>
+  <div class="logo">kbbi<em>.</em>sk</div>
+  <div class="badge">sambung kata tool</div>
 </header>
 
 <main>
-  <div class="tagline">Cari kata<br><span class="highlight">awalan & akhiran</span></div>
-  <div class="sub">// database offline · 115k+ kata · klik kata untuk copy</div>
+  <div class="hero">
+    <h1>Cari kata by<br><mark>awalan & akhiran</mark></h1>
+    <p>// offline · 115k+ kata · klik untuk copy</p>
+  </div>
 
   <div class="tips">
-    <strong>💡 Tips Sambung Kata</strong>
-    Kasih kata yang berakhiran huruf langka: <b>X, Z, Q, Y</b> biar lawan kesulitan.
+    <span>💡 tips</span>
+    Kasih kata berakhiran huruf langka — X, Z, Q, Y — biar lawan kesulitan.
   </div>
 
   <div class="search-box">
-    <div class="search-row">
-      <div class="input-group">
+    <div class="search-grid">
+      <div class="field">
         <label>Awalan</label>
         <input type="text" id="inputPrefix" placeholder="me, per, ber..." maxlength="20" />
       </div>
-      <div class="input-group">
+      <div class="field">
         <label>Akhiran</label>
         <input type="text" id="inputSuffix" placeholder="an, kan, i..." maxlength="20" />
       </div>
-      <div class="input-group">
-        <label>Min huruf</label>
-        <input type="number" id="inputMin" placeholder="0" min="1" max="30" />
-      </div>
-      <div class="input-group">
-        <label>Max huruf</label>
-        <input type="number" id="inputMax" placeholder="∞" min="1" max="30" />
-      </div>
     </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="doSearch()">🔍 CARI</button>
-      <button class="btn btn-secondary" onclick="doReset()">✕ RESET</button>
-      <button class="btn btn-danger" onclick="doRandom()">🎲 RANDOM LANGKA</button>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="doSearch()">Cari</button>
+      <button class="btn btn-ghost" onclick="doReset()">Reset</button>
+      <button class="btn btn-accent" onclick="doRandom()">Random Langka</button>
     </div>
   </div>
 
-  <div id="statsBar" class="stats-bar" style="display:none"></div>
-  <div id="resultsHeader" class="results-header" style="display:none"></div>
+  <div id="statsBar" class="stats" style="display:none"></div>
+  <div id="resultsLabel" class="results-label" style="display:none"></div>
   <div id="output"></div>
   <div id="pagination" class="pagination"></div>
 </main>
