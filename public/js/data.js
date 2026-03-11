@@ -17,7 +17,7 @@ const DataSource = {
     },
     github: {
       url: "https://api.ivoid.cfd/tools/kbbi",
-      parse: normalizeWords,
+      parse: (data) => normalizeWords(data?.result ?? data),
     },
     api: {
       url: "https://services.x-labs.my.id/kbbi/randomwords?limit=10000",
