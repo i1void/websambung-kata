@@ -42,7 +42,7 @@ git remote add origin https://github.com/username/kbbi-sk.git
 git push -u origin main
 ```
 
-Lalu import repo di [vercel.com](https://vercel.com) — langsung jalan, no config needed.
+Lalu import repo di [vercel.com](https://vercel.com)
 
 ---
 
