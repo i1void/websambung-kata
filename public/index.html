@@ -18,26 +18,49 @@
 
 <main>
   <div class="hero">
-    <h1>Cari kata by<br><mark>awalan & akhiran</mark></h1>
-    <p>// offline · 115k+ kata · klik untuk copy</p>
+    <h1 id="heroTitle">Cari kata by<br><mark>awalan & akhiran</mark></h1>
+    <p>// 71k+ kata · klik untuk copy</p>
   </div>
 
-  <div class="tips">
+  <!-- MODE TOGGLE -->
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="btnModeSambung" onclick="setMode('sambung')">Sambung Kata</button>
+    <button class="mode-btn" id="btnModeLengkapi" onclick="setMode('lengkapi')">Lengkapi Kata</button>
+  </div>
+
+  <div class="tips" id="tipsBox">
     <span>💡 tips</span>
     Kasih kata berakhiran huruf langka — X, Z, Q, Y — biar lawan kesulitan.
   </div>
 
   <div class="search-box">
-    <div class="search-grid">
-      <div class="field">
-        <label>Awalan</label>
-        <input type="text" id="inputPrefix" placeholder="me, per, ber..." maxlength="20" />
-      </div>
-      <div class="field">
-        <label>Akhiran</label>
-        <input type="text" id="inputSuffix" placeholder="an, kan, i..." maxlength="20" />
+    <!-- MODE: SAMBUNG KATA -->
+    <div id="modeSambung">
+      <div class="search-grid">
+        <div class="field">
+          <label>Awalan</label>
+          <input type="text" id="inputPrefix" placeholder="me, per, ber..." maxlength="20" />
+        </div>
+        <div class="field">
+          <label>Akhiran</label>
+          <input type="text" id="inputSuffix" placeholder="an, kan, i..." maxlength="20" />
+        </div>
       </div>
     </div>
+
+    <!-- MODE: LENGKAPI KATA -->
+    <div id="modeLengkapi" style="display:none">
+      <div class="field" style="margin-bottom:12px">
+        <label>Pola Kata</label>
+        <input type="text" id="inputPola" placeholder="b_t_, m_m_, _a_u..." maxlength="30" />
+      </div>
+      <div class="pola-hint">
+        <span>// gunakan <b>_</b> untuk huruf yang tidak diketahui</span>
+        <span>// contoh: <b>b_t_</b> → batu, beti, buta</span>
+        <span>// contoh: <b>_a_a</b> → baca, dara, rasa</span>
+      </div>
+    </div>
+
     <div class="actions">
       <button class="btn btn-primary" onclick="doSearch()">Cari</button>
       <button class="btn btn-ghost" onclick="doReset()">Reset</button>
