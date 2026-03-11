@@ -39,9 +39,10 @@ function doSearch() {
   const suffix = val("inputSuffix");
 
   if (!prefix && !suffix) {
-    alert("Isi minimal awalan atau akhiran dulu!");
+    showFieldError("Isi awalan atau akhiran dulu.");
     return;
   }
+  clearFieldError();
 
   filtered = allWords.filter(w => {
     if (prefix && !w.startsWith(prefix)) return false;
@@ -207,4 +208,18 @@ function bindEnterKeys() {
       if (e.key === "Enter") doSearch();
     });
   });
+}
+
+function showFieldError(msg) {
+  clearFieldError();
+  const err = document.createElement("p");
+  err.id = "fieldError";
+  err.style.cssText = "font-size:12px;color:#d93025;margin-top:8px;font-family:'DM Mono',monospace;";
+  err.textContent = msg;
+  document.querySelector(".actions").after(err);
+}
+
+function clearFieldError() {
+  const el = document.getElementById("fieldError");
+  if (el) el.remove();
 }
