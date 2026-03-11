@@ -270,10 +270,6 @@ main {
 
 /* ── EMPTY / LOADING ── */
 .state-box {
-  border: var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
   padding: 64px 32px;
   text-align: center;
 }
