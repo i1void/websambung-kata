@@ -2,9 +2,10 @@
  * app.js — Logic utama KBBI Sambung Kata
  */
 
-let allWords   = [];
-let filtered   = [];
+let allWords    = [];
+let filtered    = [];
 let currentPage = 1;
+let currentMode = "sambung";
 const PER_PAGE  = 120;
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
@@ -32,17 +33,51 @@ async function loadData() {
   }
 }
 
+// ── MODE ─────────────────────────────────────────────────────────────────────
+
+function setMode(mode) {
+  currentMode = mode;
+
+  document.getElementById("modeSambung").style.display  = mode === "sambung"  ? "block" : "none";
+  document.getElementById("modeLengkapi").style.display = mode === "lengkapi" ? "block" : "none";
+
+  document.getElementById("btnModeSambung").classList.toggle("active",  mode === "sambung");
+  document.getElementById("btnModeLengkapi").classList.toggle("active", mode === "lengkapi");
+
+  const heroTitle = document.getElementById("heroTitle");
+  const tipsBox   = document.getElementById("tipsBox");
+
+  if (mode === "sambung") {
+    heroTitle.innerHTML = "Cari kata by<br><mark>awalan & akhiran</mark>";
+    tipsBox.style.display = "block";
+  } else {
+    heroTitle.innerHTML = "Cari kata by<br><mark>pola huruf</mark>";
+    tipsBox.style.display = "none";
+  }
+
+  doReset();
+}
+
 // ── SEARCH ───────────────────────────────────────────────────────────────────
 
 function doSearch() {
+  clearFieldError();
+
+  if (currentMode === "sambung") {
+    searchSambung();
+  } else {
+    searchLengkapi();
+  }
+}
+
+function searchSambung() {
   const prefix = val("inputPrefix");
   const suffix = val("inputSuffix");
 
   if (!prefix && !suffix) {
-    showFieldError("Isi awalan atau akhiran dulu.");
+    showFieldError("Isi minimal awalan atau akhiran dulu.");
     return;
   }
-  clearFieldError();
 
   filtered = allWords.filter(w => {
     if (prefix && !w.startsWith(prefix)) return false;
@@ -55,33 +90,53 @@ function doSearch() {
   renderResults();
 }
 
+function searchLengkapi() {
+  const pola = val("inputPola");
+
+  if (!pola) {
+    showFieldError("Isi pola kata dulu. Contoh: b_t_");
+    return;
+  }
+
+  if (!pola.includes("_")) {
+    showFieldError("Pola harus mengandung _ sebagai huruf kosong.");
+    return;
+  }
+
+  // Convert pola ke regex: _ → satu huruf apapun
+  const regexStr = "^" + pola.split("").map(c => c === "_" ? "[a-z]" : c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("") + "$";
+  const regex = new RegExp(regexStr);
+
+  filtered = allWords.filter(w => regex.test(w));
+
+  currentPage = 1;
+  renderResults();
+}
+
 function doReset() {
-  ["inputPrefix", "inputSuffix"].forEach(id => {
-    document.getElementById(id).value = "";
+  ["inputPrefix", "inputSuffix", "inputPola"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
   });
   filtered = [];
+  clearFieldError();
   document.getElementById("pagination").innerHTML    = "";
   document.getElementById("resultsLabel").style.display = "none";
   showInitial();
 }
 
-function doRandom() {
-  const rare = ["x", "z", "q", "y", "w", "v"];
-  document.getElementById("inputSuffix").value = rare[Math.floor(Math.random() * rare.length)];
-  document.getElementById("inputPrefix").value = "";
-  doSearch();
-}
-
 // ── RENDER ───────────────────────────────────────────────────────────────────
 
 function renderResults() {
-  const prefix     = val("inputPrefix");
-  const suffix     = val("inputSuffix");
   const total      = filtered.length;
   const totalPages = Math.ceil(total / PER_PAGE);
   const pageWords  = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
 
-  // Stats bar
+  const prefix = currentMode === "sambung" ? val("inputPrefix") : "";
+  const suffix = currentMode === "sambung" ? val("inputSuffix") : "";
+  const pola   = currentMode === "lengkapi" ? val("inputPola") : "";
+
+  // Stats
   const statsBar = document.getElementById("statsBar");
   statsBar.style.display = "flex";
   statsBar.innerHTML = `
@@ -89,6 +144,7 @@ function renderResults() {
     <div class="stat-chip">🔍 <span>${total.toLocaleString()}</span> HASIL</div>
     ${prefix ? `<div class="stat-chip">▶ <span>${prefix}</span></div>` : ""}
     ${suffix ? `<div class="stat-chip">◀ <span>${suffix}</span></div>` : ""}
+    ${pola   ? `<div class="stat-chip">~ <span>${pola}</span></div>`   : ""}
   `;
 
   // Header
@@ -100,9 +156,9 @@ function renderResults() {
 
   if (total === 0) {
     setOutput(`
-      <div class="empty">
-        <div class="emoji">😞</div>
-        <p>Tidak ada kata yang cocok.<br>Coba awalan / akhiran lain.</p>
+      <div class="state-box">
+        <div class="icon">😞</div>
+        <p>Tidak ada kata yang cocok.<br>Coba pola lain.</p>
       </div>
     `);
     document.getElementById("pagination").innerHTML = "";
@@ -111,7 +167,7 @@ function renderResults() {
 
   const cards = pageWords.map(w => `
     <div class="word-card" onclick="copyWord('${w}')">
-      <div class="word-text">${highlight(w, prefix, suffix)}</div>
+      <div class="word-text">${currentMode === "sambung" ? highlight(w, prefix, suffix) : highlightPola(w, pola)}</div>
       <div class="word-len">${w.length} huruf</div>
     </div>
   `).join("");
@@ -129,11 +185,11 @@ function renderPagination(totalPages) {
   let html   = "";
 
   html += `<button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? "disabled" : ""}>← PREV</button>`;
-  if (from > 1) html += `<button class="page-btn" onclick="changePage(1)">1</button><span style="align-self:center;font-size:12px">…</span>`;
+  if (from > 1) html += `<button class="page-btn" onclick="changePage(1)">1</button><span class="page-ellipsis">…</span>`;
   for (let i = from; i <= to; i++) {
     html += `<button class="page-btn ${i === currentPage ? "active" : ""}" onclick="changePage(${i})">${i}</button>`;
   }
-  if (to < totalPages) html += `<span style="align-self:center;font-size:12px">…</span><button class="page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+  if (to < totalPages) html += `<span class="page-ellipsis">…</span><button class="page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
   html += `<button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? "disabled" : ""}>NEXT →</button>`;
 
   pg.innerHTML = html;
@@ -160,6 +216,14 @@ function highlight(w, prefix, suffix) {
   return w;
 }
 
+function highlightPola(w, pola) {
+  if (!pola) return w;
+  return w.split("").map((c, i) => {
+    if (pola[i] === "_") return `<span class="hl-s">${c}</span>`;
+    return c;
+  }).join("");
+}
+
 function copyWord(w) {
   navigator.clipboard.writeText(w).then(() => showToast(`✓ "${w}" disalin!`));
 }
@@ -176,20 +240,18 @@ function showInitial() {
   statsBar.style.display = "flex";
   statsBar.innerHTML = `<div class="stat-chip">📚 <span>${allWords.length.toLocaleString()}</span> KATA DIMUAT</div>`;
   setOutput(`
-    <div class="empty">
-      <div class="emoji">🔤</div>
-      <p>Masukkan awalan atau akhiran kata<br>lalu tekan CARI</p>
+    <div class="state-box">
+      <div class="icon">🔤</div>
+      <p>Masukkan ${currentMode === "sambung" ? "awalan atau akhiran" : "pola kata"}<br>lalu tekan Cari</p>
     </div>
   `);
 }
 
 function showError() {
   setOutput(`
-    <div class="empty">
-      <div class="emoji">⚠️</div>
-      <p>Gagal load database.<br>
-      Pastikan file <b>/data/kbbi.json</b> ada,<br>
-      atau ganti <code>mode</code> di <b>js/data.js</b></p>
+    <div class="state-box">
+      <div class="icon">⚠️</div>
+      <p>Gagal load database.<br>atau ganti mode di <code>js/data.js</code></p>
     </div>
   `);
 }
@@ -199,15 +261,8 @@ function setOutput(html) {
 }
 
 function val(id) {
-  return document.getElementById(id).value.trim().toLowerCase();
-}
-
-function bindEnterKeys() {
-  ["inputPrefix", "inputSuffix"].forEach(id => {
-    document.getElementById(id).addEventListener("keydown", e => {
-      if (e.key === "Enter") doSearch();
-    });
-  });
+  const el = document.getElementById(id);
+  return el ? el.value.trim().toLowerCase() : "";
 }
 
 function showFieldError(msg) {
@@ -216,10 +271,17 @@ function showFieldError(msg) {
   err.id = "fieldError";
   err.style.cssText = "font-size:12px;color:#d93025;margin-top:8px;font-family:'DM Mono',monospace;";
   err.textContent = msg;
-  document.querySelector(".actions").after(err);
+  document.querySelector(".actions").before(err);
 }
 
 function clearFieldError() {
   const el = document.getElementById("fieldError");
   if (el) el.remove();
+}
+
+function bindEnterKeys() {
+  ["inputPrefix", "inputSuffix", "inputPola"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("keydown", e => { if (e.key === "Enter") doSearch(); });
+  });
 }
