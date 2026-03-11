@@ -421,3 +421,59 @@ footer a:hover {
   letter-spacing: 1px;
   text-transform: uppercase;
 }
+
+/* ── MODE TOGGLE ── */
+.mode-toggle {
+  display: flex;
+  gap: 0;
+  margin-bottom: 20px;
+  border: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  width: fit-content;
+}
+
+.mode-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 9px 20px;
+  border: none;
+  background: var(--surface);
+  color: var(--gray);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.3px;
+}
+
+.mode-btn:first-child {
+  border-right: var(--border);
+}
+
+.mode-btn.active {
+  background: var(--black);
+  color: #fff;
+}
+
+.mode-btn:hover:not(.active) {
+  background: var(--gray-light);
+  color: var(--black);
+}
+
+/* ── POLA HINT ── */
+.pola-hint {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.pola-hint span {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--gray);
+}
+
+.pola-hint b {
+  color: var(--black);
+}
