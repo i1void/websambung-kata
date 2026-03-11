@@ -1,14 +1,9 @@
 /**
  * data.js — Konfigurasi sumber data KBBI
- *
- * Ganti SOURCE_MODE untuk switch sumber data:
- *   "local"  → /data/kbbi.json (host sendiri, recommended)
- *   "github" → fetch dari GitHub raw (butuh internet, bisa kena CORS)
- *   "api"    → unofficial API
  */
 
 const DataSource = {
-  mode: "github", // ← ganti di sini
+  mode: "github",
 
   sources: {
     local: {
@@ -18,10 +13,6 @@ const DataSource = {
     github: {
       url: "https://api.ivoid.cfd/tools/kbbi",
       parse: (data) => normalizeWords(data?.result ?? data),
-    },
-    api: {
-      url: "https://services.x-labs.my.id/kbbi/randomwords?limit=10000",
-      parse: (data) => normalizeWords(data?.data ?? data),
     },
   },
 
@@ -34,10 +25,6 @@ const DataSource = {
   },
 };
 
-/**
- * Normalisasi berbagai format JSON → string[]
- * Support: string[], {kata}[], {word}[], plain object
- */
 function normalizeWords(data) {
   if (!data) return [];
 
