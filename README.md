@@ -1,72 +1,54 @@
-# KBBI Sambung Kata
+# kbbi-sambung-kata
 
-> Tool pencari kata KBBI berdasarkan awalan & akhiran — buat main Sambung Kata di Roblox.
+> Web tool untuk mencari kata KBBI berdasarkan awalan dan akhiran. Dibuat untuk membantu strategi bermain game Sambung Kata di Roblox.
 
----
+## Prerequisites
 
-## Setup
+- Node.js 18+
+- Akses ke [Void API](https://api.ivoid.cfd) untuk dataset KBBI
 
-### 1. Clone & install
+## Development
 
 ```bash
-git clone https://github.com/username/kbbi-sk.git
-cd kbbi-sk
 npm install
-```
-
-### 2. Tambah database KBBI
-
-Download `kbbi.json` dari repo berikut:
-
-```
-https://github.com/dyazincahya/KBBI-SQL-database
-```
-
-Taruh file-nya di `public/data/kbbi.json`.
-
-### 3. Jalankan lokal
-
-```bash
 npm run dev
 # buka http://localhost:3000
 ```
-
----
 
 ## Deploy ke Vercel
 
 ```bash
 git add .
 git commit -m "init"
-git remote add origin https://github.com/username/kbbi-sk.git
+git remote add origin https://github.com/username/kbbi-sambung-kata.git
 git push -u origin main
 ```
 
-Lalu import repo di [vercel.com](https://vercel.com)
+Import repo di [vercel.com](https://vercel.com). Set **Root Directory** ke `public` di Project Settings, lalu deploy.
 
----
+## Data Source
 
-## Ganti Sumber Data
+Dataset KBBI diambil dari REST API:
 
-Edit nilai `mode` di `public/js/data.js`:
+```
+GET https://api.ivoid.cfd/tools/kbbi
+```
 
-| Mode | Keterangan |
-|------|------------|
-| `local` | Pakai `/data/kbbi.json` yang dihost sendiri ✅ |
-| `github` | Fetch dari GitHub raw (bisa kena CORS) |
-| `api` | Fetch dari unofficial API |
+Mengembalikan 71.093 kata dalam format array string. Konfigurasi sumber data dapat diubah di `public/js/data.js` dengan mengganti nilai `mode`:
 
-Mode `local` paling direkomendasikan untuk Vercel.
-
----
+| Mode | URL | Keterangan |
+|------|-----|------------|
+| `github` | `https://api.ivoid.cfd/tools/kbbi` | Default, direkomendasikan |
+| `local` | `/data/kbbi.json` | Host file sendiri |
+| `api` | Custom | Unofficial API lain |
 
 ## Fitur
 
-- Filter kata by **awalan**, **akhiran**, atau kombinasi keduanya
-- Filter **panjang kata** (min & max huruf)
-- **Highlight** awalan (biru) dan akhiran (merah)
-- Klik kata → **copy** ke clipboard otomatis
-- Tombol **Random Langka** — auto filter kata berakhiran huruf susah (X, Z, Q, Y, W, V)
-- **Pagination** otomatis untuk hasil yang banyak
+- Filter kata berdasarkan awalan, akhiran, atau kombinasi keduanya
+- Highlight awalan (biru) dan akhiran (merah) pada hasil pencarian
+- Klik kata untuk menyalin ke clipboard
+- Pagination otomatis untuk hasil yang banyak
 
+## Credit
 
+Dataset KBBI — [dyazincahya/KBBI-SQL-database](https://github.com/dyazincahya/KBBI-SQL-database)
