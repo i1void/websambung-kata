@@ -1,14 +1,3 @@
 {
-  "version": 2,
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/public/$1" }
-  ],
-  "headers": [
-    {
-      "source": "/public/data/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
-      ]
-    }
-  ]
+  "version": 2
 }
