@@ -157,7 +157,7 @@ function renderResults() {
   if (total === 0) {
     setOutput(`
       <div class="state-box">
-        <div class="icon">😞</div>
+        
         <p>Tidak ada kata yang cocok.<br>Coba pola lain.</p>
       </div>
     `);
@@ -241,7 +241,7 @@ function showInitial() {
   statsBar.innerHTML = `<div class="stat-chip">📚 <span>${allWords.length.toLocaleString()}</span> KATA DIMUAT</div>`;
   setOutput(`
     <div class="state-box">
-      <div class="icon">🔤</div>
+      
       <p>Masukkan ${currentMode === "sambung" ? "awalan atau akhiran" : "pola kata"}<br>lalu tekan Cari</p>
     </div>
   `);
@@ -250,7 +250,7 @@ function showInitial() {
 function showError() {
   setOutput(`
     <div class="state-box">
-      <div class="icon">⚠️</div>
+      
       <p>Gagal load database.<br>atau ganti mode di <code>js/data.js</code></p>
     </div>
   `);
