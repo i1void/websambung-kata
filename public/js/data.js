@@ -8,7 +8,7 @@
  */
 
 const DataSource = {
-  mode: "local", // ← ganti di sini
+  mode: "github", // ← ganti di sini
 
   sources: {
     local: {
@@ -16,7 +16,7 @@ const DataSource = {
       parse: normalizeWords,
     },
     github: {
-      url: "https://raw.githubusercontent.com/dyazincahya/KBBI-SQL-database/main/json/kbbi.json",
+      url: "https://api.ivoid.cfd/tools/kbbi",
       parse: normalizeWords,
     },
     api: {
