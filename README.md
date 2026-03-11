@@ -1,11 +1,6 @@
 # kbbi-sambung-kata
 
-> Web tool untuk mencari kata KBBI berdasarkan awalan dan akhiran. Dibuat untuk membantu strategi bermain game Sambung Kata di Roblox.
-
-## Prerequisites
-
-- Node.js 18+
-- Akses ke [Void API](https://api.ivoid.cfd) untuk dataset KBBI
+> Web tool untuk mencari kata KBBI berdasarkan awalan, akhiran, dan pola huruf. Dibuat untuk membantu strategi bermain game Sambung Kata dan Lengkapi Kata di Roblox.
 
 ## Development
 
@@ -34,20 +29,15 @@ Dataset KBBI diambil dari REST API:
 GET https://api.ivoid.cfd/tools/kbbi
 ```
 
-Mengembalikan 71.093 kata dalam format array string. Konfigurasi sumber data dapat diubah di `public/js/data.js` dengan mengganti nilai `mode`:
-
-| Mode | URL | Keterangan |
-|------|-----|------------|
-| `github` | `https://api.ivoid.cfd/tools/kbbi` | Default, direkomendasikan |
-| `local` | `/data/kbbi.json` | Host file sendiri |
-| `api` | Custom | Unofficial API lain |
+Mengembalikan 71.093 kata dalam format array string. Konfigurasi sumber data dapat diubah di `public/js/data.js`.
 
 ## Fitur
 
-- Filter kata berdasarkan awalan, akhiran, atau kombinasi keduanya
-- Highlight awalan (biru) dan akhiran (merah) pada hasil pencarian
-- Klik kata untuk menyalin ke clipboard
-- Pagination otomatis untuk hasil yang banyak
+**Mode Sambung Kata** — filter kata berdasarkan awalan, akhiran, atau kombinasi keduanya.
+
+**Mode Lengkapi Kata** — cari kata berdasarkan pola huruf menggunakan `_` sebagai wildcard per huruf. Contoh: `b_t_` akan menemukan kata seperti batu, beti, buta.
+
+Klik kata untuk menyalin ke clipboard. Hasil dipaginasi otomatis.
 
 ## Credit
 
